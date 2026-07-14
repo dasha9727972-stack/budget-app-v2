@@ -7,11 +7,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Бюджет">
 <meta name="theme-color" content="#1a1a18">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Бюджет">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="manifest" href="manifest.json">
 <title>Мой бюджет</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -184,59 +179,119 @@ input:focus,select:focus{outline:none;border-color:var(--blue)}
 @media(max-width:700px){
   html,body{overflow:auto;height:auto}
   .app{grid-template-columns:1fr;height:auto;overflow:visible}
-  /* Left panel */
-  .lp{height:48vh;min-height:260px;overflow:hidden}
+
+  /* Left panel - compact */
+  .lp{height:auto;max-height:44vh;min-height:200px;overflow:hidden}
+  .lp-top{padding:10px}
+  .lp-top h2{font-size:13px;margin-bottom:7px}
+  .lp-list{overflow-y:auto;flex:1}
+
   /* Right panel */
   .rp{overflow:visible;height:auto}
-  /* Income */
+
+  /* Month tabs */
+  .mtabs{padding:8px 10px 0}
+  .mtabs-row{gap:4px}
+  .mtabs-row .chip{font-size:10px;padding:4px 10px}
+
+  /* Income - 3 cols then 2x2 */
   .income{padding:8px 10px}
-  .inc-grid{grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:7px}
+  .inc-grid{grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:6px}
   .inc-card{padding:6px 8px}
-  .inc-lbl{font-size:9px}
+  .inc-lbl{font-size:8px}
   .inc-inp{font-size:13px}
-  .hier{grid-template-columns:repeat(2,1fr);gap:5px}
+  .inc-extra-total{font-size:13px}
+  .btn-link{font-size:9px;padding:2px 5px}
+  .hier{grid-template-columns:1fr 1fr;gap:5px}
   .hc{padding:6px 8px}
-  .hc-lbl{font-size:9px}
+  .hc-lbl{font-size:8px;line-height:1.3}
   .hc-val{font-size:13px}
+
   /* Checklist */
   .cl-wrap{padding:7px 10px}
+  .cl-hdr{font-size:10px;margin-bottom:6px}
   .cl-items{gap:4px}
   .cl-item{font-size:10px;padding:4px 7px}
-  /* Kanban top bar — 2 col grid */
-  .kbtop{grid-template-columns:1fr 1fr;gap:5px;padding:7px 10px}
+  .cl-amt{font-size:9px}
+  .cl-edit{font-size:9px}
+
+  /* Subtabs */
+  .rtabs{padding:7px 10px 0;gap:4px}
+  .rtabs .chip{font-size:11px;padding:5px 12px}
+
+  /* Kanban mobile tab switcher - SHOW on mobile */
+  #mob-tabs{display:flex !important}
+  .mob-kb-tab{flex:1;padding:9px 4px;font-size:11px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:#b0ada4;text-align:center;cursor:pointer;font-family:inherit}
+  .mob-kb-tab .tab-sum{display:block;font-size:10px;font-weight:400;color:#b0ada4;margin-top:1px}
+  .mob-kb-tab.on{color:#1a1a18;border-bottom-color:#1a1a18}
+  .mob-kb-tab.on .tab-sum{color:#6b6860}
+
+  /* Kanban topbar - 2x2 grid */
+  .kbtop{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    padding:8px 10px;
+  }
   .kbs{display:none}
-  .kbc{padding:6px 9px}
-  .kbc-lbl{font-size:9px}
+  .kbc{padding:7px 9px}
+  .kbc-lbl{font-size:8px}
   .kbc-val{font-size:13px}
-  .kbc-avail{grid-column:1/-1;padding:8px 10px}
-  .kbc-avail .kbc-lbl{font-size:9px}
+  .kbc-avail{grid-column:1/-1;padding:9px 11px;min-width:0}
+  .kbc-avail .kbc-lbl{font-size:8px}
   .av-total{font-size:14px}
-  /* Mobile tab switcher */
-  .mob-kb-tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border)}
-  .mob-kb-tab{flex:1;padding:10px 4px;font-size:12px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
-  .mob-kb-tab .tab-sum{display:block;font-size:10px;font-weight:400;margin-top:1px;color:var(--t3)}
-  .mob-kb-tab.on{color:var(--text);border-bottom-color:var(--text)}
-  .mob-kb-tab.on .tab-sum{color:var(--t2)}
+  .av-spent{font-size:10px}
+  .av-sub{font-size:9px}
+  /* ok/over also full width */
+  .kbtop > div:last-child{grid-column:1/-1}
+
   /* Kanban board */
   .kboard{overflow:visible;height:auto}
   .kanban{display:block;padding:0;height:auto;overflow:visible}
-  .kcol{display:none;width:100%;height:auto;max-height:none;border-radius:0;border-left:none;border-right:none;border-top:none}
-  .kcol.mob-show{display:flex}
+
+  /* Each column hidden by default, shown via mob-show */
+  .kcol{
+    display:none;
+    width:100%;
+    height:auto;
+    max-height:none;
+    border-radius:0;
+    border-left:none;
+    border-right:none;
+    border-top:none;
+  }
+  .kcol.mob-show{display:flex;flex-direction:column}
   .kcol-items{overflow-y:visible;max-height:none;padding:10px}
   .kcol-head{padding:10px 14px}
-  /* Cards */
-  .kc{padding:10px 12px}
-  .kc-name{font-size:13px;word-break:break-word;white-space:normal}
-  .kc-price{font-size:14px}
+
+  /* Cards in kanban - full width, no overflow */
+  .kc{padding:10px 12px;margin-bottom:8px}
+  .kc-row{flex-wrap:nowrap}
+  .kc-name{font-size:13px;word-break:break-word;white-space:normal;flex:1;min-width:0;padding-right:6px}
+  .kc-price{font-size:14px;white-space:nowrap;flex-shrink:0}
+  .kc-note{font-size:11px}
+  .kc-date{font-size:11px}
   .tags .tag{font-size:10px;padding:2px 7px}
+  .kc-btns{flex-wrap:wrap;gap:5px}
   .kb{font-size:11px;padding:5px 11px}
   .lim-inp{width:75px;font-size:14px}
-  /* Calendar */
-  .cal-wrap{padding:8px 10px}
+
+  /* Left list cards */
+  .lc{padding:9px 10px;margin-bottom:6px}
+  .lc-row{flex-wrap:nowrap}
+  .lc-name{font-size:12px;flex:1;min-width:0;word-break:break-word}
+  .lc-price{font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;padding-left:5px}
+  .lc-note{font-size:10px}
+  .tags .tag{font-size:9px}
+
   /* Modals */
   .mbox{padding:14px;max-width:calc(100vw - 20px)}
   .g3{grid-template-columns:1fr 1fr}
   .btn{font-size:13px}
+
+  /* Calendar */
+  .cal-wrap{padding:8px 10px}
+  .cal-cell{min-height:46px}
+  .cal-ev{font-size:9px}
 }
 </style>
 </head>
